@@ -22,10 +22,10 @@ class CreateThreadsTest extends TestCase
     public function an_authenticated_user_can_create_new_forum_threads()
     {
         // Given we have an authenticated user
-        $this->actingAs(factory(User::class)->create());
+        $this->signIn();
         // When we hit the endpoint to create a new thread
 
-        $thread = factory(Thread::class)->make();
+        $thread = make(Thread::class);
         $this->post('/threads', $thread->toArray());
         // Then, when we visit the thread page
 

@@ -13,9 +13,9 @@ class ParticateInForumTest extends TestCase
     public function unauthticated_user_may_not_add_replies()
     {
         $this->expectException("Illuminate\Auth\AuthenticationException");
-        $user = factory(User::class)->create();
+        $user = create(User::class);
 
-        $thread = factory(Thread::class)->create();
+        $thread = create(Thread::class);
         // When the user adds a reply to the thread
         $this->post($thread->path() . '/replies', []);
     }
@@ -24,12 +24,11 @@ class ParticateInForumTest extends TestCase
     public function an_authenticated_user_may_participate_a_forum_thread()
     {
         // Given we have an authticated user
-        $user = factory(User::class)->create();
-        $this->be($user);
+        $this->signIn();
         // And an existing thread
-        $thread = factory(Thread::class)->create();
+        $thread = create(Thread::class);
 
-        $reply = factory(Reply::class)->make([
+        $reply = make(Reply::class, [
             'user_id' => null,
             'thread_id' => null
         ]);
@@ -38,6 +37,6 @@ class ParticateInForumTest extends TestCase
         // Then the reply should be visible on the page.
         $this->get($thread->path())
             ->assertsee($reply->body)
-            ->assertsee($user->name);
+            ->assertsee(auth()->user()->name);
     }
 }

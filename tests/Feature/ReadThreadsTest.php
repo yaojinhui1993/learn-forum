@@ -17,7 +17,7 @@ class ReadThreadsTest extends TestCase
     {
         parent::setUp();
 
-        $this->thread = factory(Thread::class)->create();
+        $this->thread = create(Thread::class);
     }
 
     /** @test */
@@ -39,7 +39,7 @@ class ReadThreadsTest extends TestCase
     {
         // Given we have a thread
         // And that thread includes replies
-        $reply = factory(Reply::class)->create(['thread_id' => $this->thread->id]);
+        $reply = create(Reply::class, ['thread_id' => $this->thread->id]);
         // When we visit that thread page
         $this->get($this->thread->path())
             ->assertSee($reply->body);
