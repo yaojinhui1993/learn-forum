@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Thread;
 use Illuminate\Database\Eloquent\Collection;
 use App\User;
+use App\Channel;
 
 class ThreadTest extends TestCase
 {
@@ -15,6 +16,14 @@ class ThreadTest extends TestCase
     {
         parent::setUp();
         $this->thread = create(Thread::class);
+    }
+
+    /** @test */
+    public function a_thread_can_make_a_string_path()
+    {
+        $thread = create(Thread::class);
+        $url = "/threads/{$thread->fresh()->channel->slug}/{$thread->id}";
+        $this->assertEquals($url, $thread->path());
     }
 
     /** @test */
@@ -40,5 +49,13 @@ class ThreadTest extends TestCase
         ]);
 
         $this->assertCount(1, $this->thread->refresh()->replies);
+    }
+
+    /** @test */
+    public function a_thread_belongs_to_a_channel()
+    {
+        $thread = create(Thread::class);
+
+        $this->assertInstanceOf(Channel::class, $thread->channel);
     }
 }
