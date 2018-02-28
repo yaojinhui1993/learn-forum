@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Thread;
+use App\Channel;
 
 class ThreadsController extends Controller
 {
@@ -11,9 +12,13 @@ class ThreadsController extends Controller
         $this->middleware('auth')->except(['index', 'show']);
     }
 
-    public function index()
+    public function index(Channel $channel = null)
     {
-        $threads = Thread::all();
+        if ($channel->exists) {
+            $threads = $channel->threads()->latest()->get();
+        } else {
+            $threads = Thread::all();
+        }
 
         return view('threads.index', compact('threads'));
     }
