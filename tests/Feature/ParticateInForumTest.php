@@ -38,4 +38,22 @@ class ParticateInForumTest extends TestCase
             ->assertsee($reply->body)
             ->assertsee(auth()->user()->name);
     }
+
+    /** @test */
+    public function a_reply_requires_a_body()
+    {
+        $this->withExceptionHandling();
+        $this->signIn();
+
+        $thread = create(Thread::class);
+
+        $reply = make(Reply::class, [
+            'user_id' => null,
+            'thread_id' => null,
+            'body' => null
+        ]);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertSessionHasErrors('body');
+    }
 }
