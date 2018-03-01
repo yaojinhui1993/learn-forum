@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Thread;
 use App\Channel;
+use App\User;
 
 class ThreadsController extends Controller
 {
@@ -15,10 +16,18 @@ class ThreadsController extends Controller
     public function index(Channel $channel = null)
     {
         if ($channel->exists) {
-            $threads = $channel->threads()->latest()->get();
+            $threads = $channel->threads()->latest();
         } else {
-            $threads = Thread::all();
+            $threads = Thread::latest();
         }
+
+        if ($username = request('by')) {
+            $threads = User::where('name', $username)->firstOrFail()->threads()->latest();
+            // $user = User::where('name', $username)->firstOrFail();
+            // $threads = Thread::where('user_id', $user->id)->latest();
+        }
+
+        $threads = $threads->get();
 
         return view('threads.index', compact('threads'));
     }
