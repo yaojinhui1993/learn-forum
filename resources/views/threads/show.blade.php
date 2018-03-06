@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>
@@ -15,36 +15,43 @@
                     </article>
                 </div>
             </div>
-        </div>
-    </div>
+            @foreach($replies as $reply) 
+                @include('threads.reply') 
+            @endforeach 
 
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            @foreach($thread->replies as $reply)
-                @include('threads.reply')
-            @endforeach
-        </div>
-    </div>
+            {{ $replies->links() }}
 
-    @if(auth()->check())
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+            @if(auth()->check())
             <form action="{{ $thread->path() . '/replies' }}" method="POST">
                 {{ csrf_field() }}
                 <div class="form-group">
-                  <textarea class="form-control" name="body" rows="5" placeholder="Having something to say?"></textarea>
+                    <textarea class="form-control" name="body" rows="5" placeholder="Having something to say?"></textarea>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
+            @else
+            <div class="text-center">
+                <p>
+                    Please <a href="{{ route('login') }}">sign in</a> to participate the discussion
+                </p>
+            </div>
+            @endif
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p>
+                        This thread was published {{ $thread->created_at->diffForHumans() }} 
+                        by <a href="#">{{ $thread->creator->name }}</a>,
+                        and currently has {{ $thread->replies_count }} {{ str_plural('comment', $thread->replies_count) }}.
+                    </p>
+
+                </div>
+            </div>
         </div>
     </div>
-    @else 
-    <div class="text-center">
-        <p>Please <a href="{{ route('login') }}">sign in</a> to participate the discussion</p>
-    </div>
-
-    @endif
 </div>
 @endsection
