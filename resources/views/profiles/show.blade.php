@@ -1,7 +1,7 @@
-@extends('layouts.app')
-
+@extends('layouts.app') 
 @section('content')
-    <div class="container">
+<div class="container">
+    <div class="row col-md-8 col-md-offset-2">
         <div class="page-header">
             <h1>
                 {{ $profileUser->name }}
@@ -11,22 +11,23 @@
             </h1>
         </div>
         @foreach ($threads as $thread)
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="level">
-                        <span class="flex">
-                            <a href="#"> {{ $thread->creator->name }}</a> posted: {{ $thread->title }}
-                        </span>
-                        {{ $thread->created_at->diffForHumans() }}
-                    </h4>
-                </div>
-                <div class="panel-body">
-                    <article>
-                        <div>{{ $thread->body }}</div>
-                    </article>
-                </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="level">
+                    <span class="flex">
+                        <a href="#"> {{ $thread->creator->name }}</a> posted: {{ $thread->title }}
+                    </span>
+                    {{ $thread->created_at->diffForHumans() }}
+                </h4>
             </div>
-        @endforeach
-        {{ $threads->links() }}
+            <div class="panel-body">
+                <article>
+                    <div>{{ $thread->body }}</div>
+                </article>
+            </div>
+        </div>
+        @endforeach {{ $threads->links() }}
+
     </div>
+</div>
 @endsection

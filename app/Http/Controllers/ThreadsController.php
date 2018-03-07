@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Thread;
 use App\Channel;
 use App\Filters\ThreadFilters;
+use Symfony\Component\HttpFoundation\Response;
 
 class ThreadsController extends Controller
 {
@@ -56,6 +57,17 @@ class ThreadsController extends Controller
     public function create()
     {
         return view('threads.create');
+    }
+
+    public function destroy($channel, Thread $thread)
+    {
+        $thread->delete();
+
+        if (request()->wantsJson()) {
+            return response([], Response::HTTP_NO_CONTENT);
+        }
+
+        return redirect('/threads');
     }
 
     public function getThreads(Channel $channel, ThreadFilters $filters)

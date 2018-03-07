@@ -6,6 +6,8 @@ use Tests\TestCase;
 use App\User;
 use App\Thread;
 use App\Channel;
+use Symfony\Component\HttpFoundation\Response;
+use App\Reply;
 
 class CreateThreadsTest extends TestCase
 {
@@ -63,6 +65,39 @@ class CreateThreadsTest extends TestCase
 
         $this->publishThread(['channel_id' => 999])
         ->assertSessionHasErrors('channel_id');
+    }
+
+    /** @test */
+    public function guest_cannot_delete_thread()
+    {
+        $this->withExceptionHandling();
+        $thread = create(Thread::class);
+        $response = $this->json('DELETE', $thread->path());
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    /** @test */
+    public function a_thread_can_be_deleted()
+    {
+        // Given we have an authenticated user
+        $this->signIn();
+        // And a thread create by the user
+        $thread = create(Thread::class, ['user_id' => auth()->id()]);
+        $reply = create(Reply::class, ['thread_id' => $thread->id]);
+
+        // When we visit the delete thread endpoint
+        $response = $this->json('DELETE', $thread->path());
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        // The thread should missing in the database
+        $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
+        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+    }
+
+    /** @test */
+    public function threads_may_only_deleted_by_those_who_have_permissions()
+    {
+        // TODO:
     }
 
     public function publishThread($overides = [])
