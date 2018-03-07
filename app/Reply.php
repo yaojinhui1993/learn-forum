@@ -8,6 +8,8 @@ class Reply extends Model
 {
     protected $guarded = [];
 
+    protected $append = ['is_favorited'];
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -15,7 +17,7 @@ class Reply extends Model
 
     public function favorites()
     {
-        return $this->morphMany(Favorite::class, 'favorited');
+        return $this->morphMany(Favorite::class, 'favorited')->with('is_favorited');
     }
 
     public function favorite()
@@ -31,5 +33,10 @@ class Reply extends Model
     public function isFavorited()
     {
         return $this->favorites()->where('user_id', auth()->id())->exists();
+    }
+
+    public function getIsFavoritedAttribute()
+    {
+        return $this->isFavorited();
     }
 }
