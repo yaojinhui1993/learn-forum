@@ -23,15 +23,15 @@ class ProfilesTest extends TestCase
     /** @test **/
     public function profiles_display_all_threads_created_by_the_associated_user()
     {
-        $this->signIn();
         // Give we have a user
-        $user = create(User::class);
+        $this->signIn();
         // And a thread created by the user
-        $thread = create(Thread::class, ['user_id' => $user->id]);
+        $thread = create(Thread::class, ['user_id' => auth()->id()]);
 
         // When we visit the user profile page
         // Then we should see the thread title and body
-        $this->get("/profiles/{$user->name}")
+
+        $this->get('/profiles/' . auth()->user()->name)
             ->assertSee($thread->title)
             ->assertSee($thread->body);
     }

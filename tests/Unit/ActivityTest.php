@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\Thread;
 use App\Activity;
 use App\Reply;
+use Carbon\Carbon;
 
 class ActivityTest extends TestCase
 {
@@ -45,5 +46,31 @@ class ActivityTest extends TestCase
 
         $this->assertEquals(2, Activity::count());
         $this->assertEquals(Activity::where('subject_type', 'App\Reply')->first()->subject->id, $reply->id);
+    }
+
+    /** @test */
+    public function it_fetches_a_feed_for_any_user()
+    {
+        $this->signIn();
+        // Given we have a thread
+        $thread = create(Thread::class, ['user_id' => auth()->id()], 2);
+        // And another thread from a week ago
+        auth()->user()->activities()->first()->update(['created_at' => Carbon::now()->subWeek()]);
+
+        // When we fetch their feed
+        $activity = Activity::feed(auth()->user());
+
+        // Then, it should be returned in the proper format.
+        $this->assertTrue(
+            $activity->keys()->contains(
+                Carbon::now()->format('Y-m-d')
+            )
+        );
+
+        $this->assertTrue(
+            $activity->keys()->contains(
+                Carbon::now()->subWeek()->format('Y-m-d')
+            )
+        );
     }
 }
