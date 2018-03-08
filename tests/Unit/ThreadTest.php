@@ -15,6 +15,7 @@ class ThreadTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->signIn();
         $this->thread = create(Thread::class);
     }
 

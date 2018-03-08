@@ -11,6 +11,7 @@ class ChannelTest extends TestCase
     /** @test */
     public function a_channel_consists_of_threads()
     {
+        $this->signIn();
         $channel = create(Channel::class);
         $thread = create(Thread::class, ['channel_id' => $channel->id]);
 

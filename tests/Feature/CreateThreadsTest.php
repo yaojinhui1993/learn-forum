@@ -71,14 +71,16 @@ class CreateThreadsTest extends TestCase
     public function unauthorized_user_may_not_delete_threads()
     {
         $this->withExceptionHandling();
-        $thread = create(Thread::class);
-
-        $this->json('DELETE', $thread->path())
-            ->assertStatus(Response::HTTP_UNAUTHORIZED);
 
         $this->signIn();
+        $thread = create(Thread::class);
         $this->json('DELETE', $thread->path())
             ->assertStatus(Response::HTTP_FORBIDDEN);
+
+        $thread = create(Thread::class);
+        auth()->logout();
+        $this->json('DELETE', $thread->path())
+            ->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
     /** @test */

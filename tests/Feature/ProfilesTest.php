@@ -23,6 +23,7 @@ class ProfilesTest extends TestCase
     /** @test **/
     public function profiles_display_all_threads_created_by_the_associated_user()
     {
+        $this->signIn();
         // Give we have a user
         $user = create(User::class);
         // And a thread created by the user

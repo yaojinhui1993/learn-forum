@@ -13,8 +13,10 @@ class ParticateInForumTest extends TestCase
     public function unauthticated_user_may_not_add_replies()
     {
         $this->withExceptionHandling();
-
+        $this->signIn();
         $thread = create(Thread::class);
+        auth()->logout();
+
         $this->post($thread->path() . '/replies', [])
             ->assertRedirect('/login');
     }

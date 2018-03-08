@@ -16,6 +16,7 @@ class ReadThreadsTest extends TestCase
     {
         parent::setUp();
 
+        $this->signIn();
         $this->thread = create(Thread::class);
     }
 
