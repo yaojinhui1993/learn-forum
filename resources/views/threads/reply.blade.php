@@ -1,9 +1,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <div class="level">
+            <div class="level">
             <h5 class="flex">
                 <a href="{{ route('profile', $reply->owner->name) }}" >
-                    {{ $reply->owner->name }}
+                     {{ $reply->owner->name }}
                 </a> said {{ $reply->created_at->diffForHumans() }}...
             </h5>
             <form action="/replies/{{ $reply->id }}/favorites" method="POST">

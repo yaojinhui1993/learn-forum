@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 @section('content')
 <div class="container">
     <div class="row col-md-8 col-md-offset-2">
@@ -15,7 +15,11 @@
             <div class="panel-heading">
                 <h4 class="level">
                     <span class="flex">
-                        <a href="#"> {{ $thread->creator->name }}</a> posted: {{ $thread->title }}
+                        <a href="{{ route('profile', $thread->creator->name) }}"> {{ $thread->creator->name }}</a>
+                         posted:
+                        <a href="{{ $thread->path() }}">{{ $thread->title }}</a>
+
+
                     </span>
                     {{ $thread->created_at->diffForHumans() }}
                 </h4>
