@@ -11,10 +11,13 @@ trait RecordsActivity
         }
         static::getActivitiesToRecord()
             ->each(function ($event) {
-                static::$event(function ($thread) use ($event) {
-                    $thread->recordActivity($event);
+                static::$event(function ($model) use ($event) {
+                    $model->recordActivity($event);
                 });
             });
+        static::deleting(function ($model) {
+            $model->activity()->delete();
+        });
     }
 
     protected static function getActivitiesToRecord()
