@@ -51,7 +51,8 @@ class ThreadsController extends Controller
             'body' => request()->body
         ]);
 
-        return redirect($thread->path());
+        return redirect($thread->path())
+            ->with('flash', 'You flash has been published!');
     }
 
     public function create()

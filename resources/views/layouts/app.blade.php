@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
     <style>
         body{ margin-bottom: 100px}
         .level { display: flex; align-items: center }
@@ -23,9 +23,11 @@
         @include('layouts.nav')
 
         @yield('content')
+
+        <flash message="{{ session('flash') }}"></flash>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
