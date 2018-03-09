@@ -36,6 +36,10 @@ class RepliesController extends Controller
 
         $reply->delete();
 
+        if (request()->wantsJson()) {
+            return response(['status' => 'Reply deleted!']);
+        }
+
         return back();
     }
 
@@ -44,6 +48,5 @@ class RepliesController extends Controller
         $this->authorize('update', $reply);
 
         $reply->update(['body' => request('body')]);
-
     }
 }
