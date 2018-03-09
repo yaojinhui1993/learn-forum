@@ -9,10 +9,11 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
-window.event = new Vue();
+
+window.Event = new Vue();
 
 window.flash = function(message) {
-    window.event.$emit('flash', message);
+    window.Event.$emit('flash', message);
 }
 
 /**
@@ -22,6 +23,7 @@ window.flash = function(message) {
  */
 
 Vue.component('flash', require('./components/Flash.vue'));
+Vue.component('reply', require('./components/Reply.vue'));
 
 const app = new Vue({
     el: '#app'

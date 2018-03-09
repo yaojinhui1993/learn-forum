@@ -91,4 +91,37 @@ class ParticateInForumTest extends TestCase
             'id' => $reply->id
         ]);
     }
+
+    /** @test */
+    public function unauthorized_user_cannot_update_replies()
+    {
+        $this->withExceptionHandling();
+
+        $reply = create(Reply::class);
+
+        $this->patch('/replies/' . $reply->id, [])
+            ->assertRedirect('/login');
+
+        $this->signIn();
+        $this->patch('/replies/' . $reply->id, [])
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /** @test */
+    public function authorized_user_can_update_replies()
+    {
+        $this->signIn();
+
+        $reply = create(Reply::class, ['user_id' => auth()->id()]);
+
+        $updatedReply = 'You have been changed, fool!';
+        $this->patch('/replies/' . $reply->id, [
+            'body' => $updatedReply
+        ]);
+
+        $this->assertDatabaseHas('replies', [
+            'id' => $reply->id,
+            'body' => $updatedReply
+        ]);
+    }
 }
