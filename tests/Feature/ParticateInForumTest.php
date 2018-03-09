@@ -6,6 +6,7 @@ use Tests\TestCase;
 use App\User;
 use App\Thread;
 use App\Reply;
+use Symfony\Component\HttpFoundation\Response;
 
 class ParticateInForumTest extends TestCase
 {
@@ -57,5 +58,37 @@ class ParticateInForumTest extends TestCase
 
         $this->post($thread->path() . '/replies', $reply->toArray())
             ->assertSessionHasErrors('body');
+    }
+
+    /** @test */
+    public function unauthorized_user_cannot_delete_replies()
+    {
+        $this->withExceptionHandling();
+        $reply = create(Reply::class);
+
+        $this->delete('/replies/' . $reply->id)
+            ->assertRedirect('/login');
+
+        $this->signIn();
+        $this->delete('/replies/' . $reply->id)
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
+    /** @test */
+    public function authorized_user_can_delete_their_replies()
+    {
+        $this->signIn($user = create(User::class));
+
+        $reply = create(Reply::class, ['user_id' => $user->id]);
+        $this->assertDatabaseHas('replies', [
+            'id' => $reply->id
+        ]);
+
+        $this->delete('/replies/' . $reply->id)
+            ->assertStatus(Response::HTTP_FOUND);
+
+        $this->assertDatabaseMissing('replies', [
+            'id' => $reply->id
+        ]);
     }
 }

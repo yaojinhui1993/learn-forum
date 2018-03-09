@@ -61,7 +61,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function a_user_can_filter_threads_by_any_username()
     {
-        $john = $this->signIn(create(User::class, ['name' => 'John Doe']));
+        $this->signIn($john = create(User::class, ['name' => 'John Doe']));
         $threadByJohn = create(Thread::class, ['user_id' => auth()->id()]);
         $threadNotByJohn = create(Thread::class) ;
         // When we filter the thread by the username
